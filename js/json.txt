@@ -1,0 +1,138 @@
+(function test (){
+    let json = [
+        {id: 1, name: '1', parentId: 0},
+        {id: 2, name: '2', parentId: 0},
+        {id: 3, name: '3', parentId: 0},
+        {id: 11, name: '11', parentId: 1},
+        {id: 12, name: '12', parentId: 1},
+        {id: 13, name: '13', parentId: 1},
+        {id: 111, name: '111', parentId: 11},
+        {id: 112, name: '112', parentId: 11},
+        {id: 21, name: '21', parentId: 2},
+        {id: 211, name: '211', parentId: 21},
+        {id: 1111, name: '1111', parentId: 111},
+    ]
+    let jsonTree = jsonTOJsonTree(json, {id:'id', pid:'parentId', children:'children'})
+    console.log(jsonTree);
+
+    let json2 = jsonTreeToJson(jsonTree, {id:'id', pid:'parentId', children:'children'})
+    console.log(json2);
+})()
+
+/**
+ * 将扁平化数据(json)转成jsonTree格式
+ * @param  {[type]} data   扁平数据
+ * @param  {[type]} config {id:'id', pid:'pid', children:'children'}
+ *                         id 数据里的id string类型
+ *                         pid 数据里的父id string类型
+ *                         children 生成结果中子节点的字段名 string类型
+ * @return {[type]}        [description]
+ */
+function jsonTOJsonTree (data, config) {
+    let id = config.id || 'id',
+        pid = config.pid || 'pid',
+        children = config.children || 'children',
+        idMap = [],
+        jsonTree = []
+    data.forEach(function(v) {
+        idMap[v[id]] = v
+    })
+    data.forEach(function(v) {
+        let parent = idMap[v[pid]]
+        if (parent) {
+        	!parent[children] && (parent[children] = [])
+        	parent[children].push(v)
+        } else {
+        	jsonTree.push(v)
+        }
+    })
+    return jsonTree
+}
+
+/**
+ * 将jsonTree格式数据转成扁平化(json)数据
+ * @param  {[type]} data   jsonTree格式数据
+ * @param  {[type]} config {id:'id', pid:'pid', children:'children'}
+ *                         id 数据里的id string类型
+ *                         pid 数据里的父id string类型
+ *                         children 数据里子节点字段名 string类型
+ * @return {[type]}        [description]
+ */
+function jsonTreeToJson (data, config) {
+    let id = config.id || 'id',
+        pid = config.pid || 'pid',
+        children = config.children || 'children',
+        json = []
+    json = data.reduce((arr, cur) => {
+        let item = Object.assign({}, cur)
+        if(children in cur){
+            delete item[children]
+            return arr.concat([item], jsonTreeToJson(cur[children], config));
+        }else {
+            return arr.concat([item])
+        }
+    }, [])
+    return json
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function treeTransArray(tree, key) {//通过树结构返回普通json数组
+            return tree.reduce(function(con, item) {
+                var callee = arguments.callee;
+                con.push(item);
+                if (item[key] && item[key].length >0)
+                    item[key].reduce(callee, con);
+                return con;
+            }, []).map(function(item){
+            item[key] = item[key];
+            return item;
+        })
+}
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+调用方法
+
+var selList=[{}] // 创建一个数组 默认的第一个元素为对象
+selList[0]=node //node 为树形json , childrenList为 key
+var dataArr=treeTransArray(selList,'childrenList');
+
+
+
+
+
+方法二
+
+使用ztree 自带方法
+下载ztree.js ；
+
+var newTree=$.fn.zTree.getZTreeObj("TargetTree");//获取树
+var Nodes=newTree.getNodes();//拿到树形的json树节点(最上一张图的节点)
+var act=newTree.transformToArray(Nodes); //ztree自带将json 树结构转化普通json的方法
+
+
+
