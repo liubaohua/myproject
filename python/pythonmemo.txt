@@ -1,0 +1,8 @@
+安装python 3.7后添加环境变量，在path增加安装目录和scripts目录
+#切换到
+cd C:\Users\Administrator\AppData\Local\Programs\Python\Python37-32\Scripts
+#安装pip3
+easy_install pip3
+#安装插件
+pip install pandas
+pip install openpyxl 

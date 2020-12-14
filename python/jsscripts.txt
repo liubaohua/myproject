@@ -1,0 +1,48 @@
+function createXmlHttp()
+{
+if (window.XMLHttpRequest) { 
+xmlHttp = new XMLHttpRequest(); 
+} else { 
+xmlHttp = new ActiveXObject("Microsoft.XMLHTTP"); 
+}
+}
+var txt=null;
+var objectid=null;
+var m_result=null;
+function go()
+{
+m_result="";
+console.clear();
+exec();
+}
+
+var id=null;
+function exec() 
+{
+var txt=prompt("","");//[{"id":2011},{"id":2023}]
+var jsonObj = JSON.parse(txt);
+for(var i=0;i<jsonObj.length;i++)
+{
+m_result = m_result+jsonObj[i].id+"-->"+"\r\n";
+id=jsonObj[i].id;
+var url = "http://actman.jxeduyun.com/api/sareport/one/"+jsonObj[i].id+"?token=9ff87582-6380-4ddc-83b2-7df86f122994"; 
+createXmlHttp(); 
+xmlHttp.onreadystatechange = writeSource;
+xmlHttp.open("GET", url, false);
+xmlHttp.send(null);
+
+}
+console.log(m_result);
+}
+
+function writeSource() { 
+if (xmlHttp.readyState == 4) { 
+var txt = unescape(xmlHttp.responseText.replace(/\\u/g, "%u"));
+txt = JSON.parse(txt).data.reportfile;
+for(var i=0;i<txt.length;i++)
+{
+m_result=m_result+id+"->"+txt[i].label+"->http://actman.jxeduyun.com/previewnew"+txt[i].uploadUrl+"\r\n";
+}
+}
+}
+
