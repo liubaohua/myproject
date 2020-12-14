@@ -1,0 +1,11 @@
+create or replace function fun_getpk_cont(cPk_corp varchar2,vPk_BillType varchar2,vContName varchar2)
+ return varchar2 is
+  strResult varchar2(20);
+begin
+
+  select max(d.pk_cont) into strResult from csxt.pm_cm_contract d
+    where d.pk_corp=cPk_corp and nvl(d.dr,0)=0 and d.vname=vContName and d.pk_billtype=vPk_BillType;
+    return   strResult;
+end fun_getpk_cont;
+
+

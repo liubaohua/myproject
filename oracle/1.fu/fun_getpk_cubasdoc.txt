@@ -1,0 +1,12 @@
+
+
+create or replace function fun_getpk_cubasdoc(iOaCorpid number,cCusName varchar2) return varchar2 is
+  strResult varchar2(20);
+begin
+
+select max(FIELD0004) into strResult from formmain_0212 cus 
+where cus.FIELD0006 = cCusName and cus.field0003=iOaCorpid;
+
+  return strResult;
+end fun_getpk_cubasdoc;
+

@@ -1,0 +1,13 @@
+CREATE OR REPLACE FUNCTION FN_NCService(pk_billtype varchar2,pk_cont varchar2,iOaRecid number) RETURN clob AS
+  l_response_call          XMLType;
+  l_request_body           varchar2(3000);
+  l_target_url             varchar2(500);
+  l_NcResult             clob;
+BEGIN
+  l_target_url        := 'http://192.168.1.147:8097/uapws/service/nc.webservice.service.IMakeVoucher';
+  l_request_body      :='<sn:makeVoucher><string>{pk_billtype:"'||pk_billtype||'",oa_recid:"'||iOaRecid||'",pk_cont:"'||pk_cont||'"}</string></sn:makeVoucher>';
+  l_response_call := soap_call(l_request_body, l_target_url, 'sendtext');
+  l_NcResult := l_response_call.extract('//return/text()').getStringVal();
+  --insert into csxt.pm_oa_errlog(pk_billtype,pk_cont,oa_recid,message) values (pk_billtype,pk_cont,iOaRecid,l_NcResult);
+  return l_NcResult;
+end;

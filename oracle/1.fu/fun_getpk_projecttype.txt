@@ -1,0 +1,12 @@
+create or replace function fun_getpk_projecttype(cProjectTypeName varchar2) return varchar2 is
+  strResult varchar2(20);
+begin
+
+select max(FIELD0005) into strResult from formmain_0216 conttype 
+where conttype.FIELD0002=cProjectTypeName;
+
+  return strResult;
+end fun_getpk_projecttype;
+
+
+

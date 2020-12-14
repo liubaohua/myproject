@@ -1,0 +1,9 @@
+
+create or replace function fun_getpk_corp(iOaCorpid number) return varchar2 is
+  strResult varchar2(4);
+begin
+  select max(pk_corp) into strResult from csxt.bd_corp c,org_unit u 
+  where c.unitcode=u.code and u.id=iOaCorpid;
+
+  return strResult;
+end fun_getpk_corp;

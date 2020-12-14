@@ -1,0 +1,10 @@
+begin 
+dbms_network_acl_admin.create_acl( acl => 'utl_http.xml', description => 'Http Access',
+ principal => 'OA',
+  is_grant => TRUE, privilege => 'connect', start_date => null, end_date => null );
+--添加新用户
+dbms_network_acl_admin.add_privilege ( acl => 'utl_http.xml', principal => 'OA', is_grant => TRUE, privilege => 'resolve', start_date => null, end_date => null ); 
+--给网络分配一个访问控制列表
+dbms_network_acl_admin.assign_acl ( acl => 'utl_http.xml', host => '192.168.1.147', lower_port => 8097, upper_port => 8888 ); 
+commit; 
+end; 

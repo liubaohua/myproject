@@ -1,0 +1,11 @@
+    
+create or replace function fun_getpk_psndocByName(cPk_corp varchar2,cPersonName varchar2)
+ return varchar2 is
+  strResult varchar2(20);
+begin
+  
+  select max(ry.pk_psndoc) into strResult from csxt.bd_psndoc ry 
+    where ry.pk_corp=cPk_corp and ry.psnname= cPersonName;
+    return   strResult;
+end fun_getpk_psndocByName;
+

@@ -1,0 +1,19 @@
+
+
+
+9241-3 合同保存提交审核 pk_cont 无用
+{pk_billtype:"9241",oa_recid:"1112",pk_cont:"11111"}
+
+9247-9 合同生效 oa_recid 无用
+{pk_billtype:"9247",oa_recid:"1112",pk_cont:"1001A6100000000007Q8"}
+
+
+9244-6 合同修订
+{pk_billtype:"9244",oa_recid:"1112",pk_cont:"1001A6100000000006Y3"}
+9261 付款申请 pk_cont 无用
+{pk_billtype:"9261",oa_recid:"1823574095636939103",pk_cont:"1"}
+9262 无合同费用单 pk_cont 无用
+{pk_billtype:"9261",oa_recid:"xxx",pk_cont:"1"}
+
+
+http://218.64.175.82:8097/uapws/service/nc.webservice.service.IMakeVoucher

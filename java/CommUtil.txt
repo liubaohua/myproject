@@ -1,0 +1,94 @@
+获取下一整点。如现在是4：53 下一整点是5点。如果现在是5点，下一整点为6点。
+
+	public static Date  getNextSharpHour()
+	{
+		Calendar   calendar=new GregorianCalendar(); 
+		Date currDate = new Date();
+		currDate = new Date(currDate.getYear(),currDate.getMonth(),currDate.getDate(),currDate.getHours(),0,0);
+		calendar.setTime(currDate); 
+		calendar.add(calendar.HOUR, 1);
+		return calendar.getTime();
+	}
+
+
+     
+	 private static Connection conn=null;
+
+	    //对外提供一个方法来获取数据库连接
+	    public static Connection getConnection(){
+	    	if(conn==null)
+	    	{
+	    		try {
+		            //1.加载驱动程序
+		            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+		            //2.获得数据库的连接
+		            conn=(Connection)DriverManager.getConnection(URL,USER,PASSWORD);
+		        } catch (ClassNotFoundException e) {
+		            e.printStackTrace();
+		        } catch (SQLException e) {
+		            e.printStackTrace();
+		        }
+	    	}
+	        return conn;
+	    }
+	    
+	    public static ResultSet query(String sql) throws SQLException
+	    {
+	    	getConnection();
+	    	Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
+	        ResultSet rs = stmt.executeQuery(sql);
+	        return rs;
+	    }
+	    
+	    public static int update(String sql) throws SQLException
+	    {
+	    	getConnection();
+	    	Statement stmt = conn.createStatement();
+	        int rowcnt = stmt.executeUpdate(sql);
+	        return rowcnt;
+	    }
+	    
+
+
+
+
+	public static void writeFile(String filePath,String data) throws IOException
+	{
+		File file1 = new File(filePath);
+        file1.createNewFile();
+//        FileWriter writer = new FileWriter(filePath);
+        BufferedWriter writer = new BufferedWriter (new OutputStreamWriter (new FileOutputStream (filePath,false),"UTF-8"));
+        writer.write(data);
+        writer.flush();
+        writer.close();
+	}
+	
+	public static String getUUID()
+	{
+		return UUID.randomUUID().toString().replace("-", "").toLowerCase();
+	}
+	
+	public static String formatDate(String format)
+	{
+		SimpleDateFormat format0 = new SimpleDateFormat(format);//"yyyy-MM-dd HH:mm:ss"
+	    String time = format0.format(new java.util.Date());
+	    return time;
+	}
+	
+	public static String formatDateDefault()
+	{
+		return formatDate("yyyy-MM-dd HH:mm:ss");
+	}
+     
+	public static String formatDateyyyyMMdd()
+	{
+		return formatDate("yyyyMMdd");
+	}
+	
+	public static String formatDateHHmmss()
+	{
+		return formatDate("HHmmss");
+	}
+	
+
+

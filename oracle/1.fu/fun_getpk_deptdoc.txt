@@ -1,0 +1,12 @@
+create or replace function fun_getpk_deptdoc(cPk_corp varchar2,iOaDeptId number)
+ return varchar2 is
+  strResult varchar2(20);
+begin
+  
+  select max(d.pk_deptdoc) into strResult from csxt.bd_deptdoc d ,org_unit u
+    where d.pk_corp=cPk_corp  and u.code=d.cfulldeptcode and
+     u.id = iOaDeptId;
+    return   strResult;
+end fun_getpk_deptdoc;
+
+

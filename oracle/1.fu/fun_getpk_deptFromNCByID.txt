@@ -1,0 +1,9 @@
+
+create or replace function fun_getpk_deptFromNCByID(iOaDeptId varchar2) return varchar2 is
+  strResult varchar2(20);
+begin
+  select  max(d.pk_deptdoc) into strResult
+   from oa.org_unit u1 inner join csxt.bd_deptdoc d on d.cfulldeptcode=u1.code
+   where u1.id=iOaDeptId;
+  return strResult;
+end fun_getpk_deptFromNCByID;

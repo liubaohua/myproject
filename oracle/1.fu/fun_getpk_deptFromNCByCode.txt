@@ -1,0 +1,8 @@
+
+create or replace function fun_getpk_deptFromNCByCode(cFullDeptCode1 varchar2) return varchar2 is
+  strResult varchar2(20);
+begin
+ select max(d.pk_deptdoc) into strResult
+   from csxt.bd_deptdoc d where d.cfulldeptcode=cFullDeptCode1;
+  return strResult;
+end fun_getpk_deptFromNCByCode;

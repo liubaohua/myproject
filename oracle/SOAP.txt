@@ -1,0 +1,83 @@
+create or replace function soap_call
+  ( p_req_body       in varchar2
+  , p_target_url in varchar2
+  , p_soap_action in varchar2 default 'none'
+  ) return xmltype
+  is
+    l_soap_request  varchar2(30000);
+    l_soap_response varchar2(30000);
+    http_req utl_http.req;
+    http_resp utl_http.resp;
+  begin
+    l_soap_request := '<?xml version="1.0" encoding="UTF-8"?><env:Envelope xmlns:env="http://schemas.xmlsoap.org/soap/envelope/"  xmlns:sn="http://service.webservice.nc/IMakeVoucher" >
+    <env:Body>'|| p_req_body ||'</env:Body></env:Envelope>';
+    http_req:= utl_http.begin_request
+               ( p_target_url
+               , 'POST'
+               , 'HTTP/1.1'
+               );
+    utl_http.set_header(http_req, 'Content-Type', 'text/xml; charset=UTF8');
+    utl_http.set_header(http_req, 'Content-Length', length(l_soap_request));
+    utl_http.set_header(http_req, 'SOAPAction', p_soap_action);
+    utl_http.write_text(http_req, l_soap_request);
+    -- the actual call to the service is made here
+    http_resp:= utl_http.get_response(http_req);
+    utl_http.read_text(http_resp, l_soap_response);
+    utl_http.end_response(http_resp);
+ 
+    -- only return from the soap response - that is: the content of the body element in the SOAP envelope
+    return XMLType.createXML(l_soap_response).extract('/env:Envelope/env:Body/child::node()'
+                     , 'xmlns:env="http://schemas.xmlsoap.org/soap/envelope/"');
+  end;
+ 
+
+
+
+--webservice调用代码
+CREATE OR REPLACE FUNCTION FN_NCService(iOaRecid number) RETURN VARCHAR2 AS
+  l_response_call          XMLType;
+  l_request_body           varchar2(20000);
+  l_target_url             varchar2(200);
+BEGIN
+  l_target_url        := 'http://192.168.1.147:8097/uapws/service/nc.webservice.service.IMakeVoucher';
+  l_request_body      :=
+       '<sn:makeVoucher><string>{pk_billtype:"9261",oa_recid:"'||iOaRecid||'",pk_cont:""} </string></sn:makeVoucher>';
+  l_response_call := soap_call(l_request_body, l_target_url, 'sendtext');
+  return l_response_call.extract('//return/text()').getStringVal();
+end;
+
+
+declare
+l_response_call          XMLType;
+l_response_call1          XMLType;
+  l_request_body           varchar2(20000);
+  --l_target_namespace       varchar2(200);
+  l_target_url             varchar2(200);
+BEGIN
+  --l_target_namespace  := 'http://led.innotek.com/';
+  l_target_url        := 'http://192.168.:8008/uapws/service/nc.webservice.service.IMakeVoucher';
+  l_request_body      :=
+       '<sn:sayHello><string>china</string></sn:sayHello>';
+  l_response_call := soap_call(l_request_body, l_target_url, 'sendtext');
+
+  dbms_output.put_line(l_response_call.extract('//return/text()').getStringVal());
+--  return l_response_call.extract('//return/text()').getStringVal();
+end;
+
+
+
+
+
+begin 
+dbms_network_acl_admin.create_acl( acl => 'utl_http.xml', description => 'Http Access',
+ principal => 'OA',
+  is_grant => TRUE, privilege => 'connect', start_date => null, end_date => null );
+--添加新用户
+dbms_network_acl_admin.add_privilege ( acl => 'utl_http.xml', principal => 'OA', is_grant => TRUE, privilege => 'resolve', start_date => null, end_date => null ); 
+--给网络分配一个访问控制列表
+dbms_network_acl_admin.assign_acl ( acl => 'utl_http.xml', host => '192.168.1.147', lower_port => 8097, upper_port => 8888 ); 
+commit; 
+end; 
+
+
+

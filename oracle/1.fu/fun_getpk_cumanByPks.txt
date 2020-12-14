@@ -1,0 +1,10 @@
+    
+create or replace function fun_getpk_cumanByPks(cPk_corp varchar2,cPk_cubasdoc varchar2)
+ return varchar2 is
+  strResult varchar2(20);
+begin
+   --供应商档案PK
+select max(pk_cumandoc) into strResult from csxt.bd_cumandoc where custflag in (1,3)
+    and pk_corp=cPk_corp and pk_cubasdoc=cPk_cubasdoc;
+  return strResult;
+end fun_getpk_cumanByPks;

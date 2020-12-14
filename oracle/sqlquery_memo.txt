@@ -1,0 +1,60 @@
+
+create tablespace oaspace datafile 'E:\app\Administrator\oradata\orcl\SYSTEM01.DBF'  size 200m;
+alter database datafile 'E:\app\Administrator\oradata\orcl\SYSTEM01.DBF' AUTOEXTEND ON NEXT 50M MAXSIZE UNLIMITED;
+
+
+
+select m.custflag,b.custname from bd_cumandoc m,bd_cubasdoc b,bd_corp c where m.pk_cubasdoc=b.pk_cubasdoc
+and b.custcode='1001020141' and c.pk_corp=m.pk_corp
+and c.unitcode='100102'
+
+
+92621908270847
+
+
+------无合同费用表，pk_cumandoc 的custflag=3
+
+select * from pm_pa_noncontfee where vbillno in ('92621907160768','92621907190781')
+
+
+select m.pk_cubasdoc,custflag,m.pk_corp from bd_cumandoc m,bd_cubasdoc b 
+where b.pk_cubasdoc=m.pk_cubasdoc
+and m.pk_cubasdoc in (select pk_cubasdoc from bd_cumandoc where custflag=2)
+and m.pk_cubasdoc='0001A310000000000PLB'
+order by 1,3
+
+
+bd_cumandoc custflag
+供应商 1有用 <空>无用
+客户 0有用 4无用
+客商 2客户 3供应商
+
+
+custflag=3
+
+select f.vbillno,f.pk_cumandoc,m.custflag,b.custcode,b.custname  from pm_pa_noncontfee f,bd_cumandoc m,bd_cubasdoc b where 
+f.pk_cumandoc=m.pk_cumandoc and b.pk_cubasdoc=m.pk_cubasdoc and
+f.vbillno='92621908270847'
+
+
+----付款申请单
+
+select * from pm_pa_payapply where vbillno in ('92611901030311','92611806270053') and pk_corp=1004
+
+--pk_cubasdoc=pk_secondbase    pk_cumandoc=pk_second  合同乙方
+select a.vbillno, b1.custname,b2.custname, a.pk_cumandoc,a.pk_cubasdoc,a.pk_second,a.pk_secondbase,m1.custflag,m2.custflag
+ from pm_pa_payapply a,bd_cumandoc m1,bd_cumandoc m2,bd_cubasdoc b1,bd_cubasdoc b2
+ where a.vbillno in ('92611710280001','92611710290018') 
+ and m1.pk_cumandoc=a.pk_cumandoc and m2.pk_cumandoc=a.pk_second
+ and b1.pk_cubasdoc=a.pk_cubasdoc and b2.pk_cubasdoc=a.pk_secondbase
+ 
+  
+--工程合同录入
+custflag 都是3
+select a.pk_corp,b1.custname,b2.custname,b3.custname,m1.custflag,m2.custflag,m3.custflag 
+from pm_cm_contract a,bd_cumandoc m1,bd_cumandoc m2,bd_cumandoc m3,bd_cubasdoc b1,bd_cubasdoc b2,bd_cubasdoc b3
+where m1.pk_cumandoc=a.pk_first and m2.pk_cumandoc=a.pk_second
+ and b1.pk_cubasdoc=m1.pk_cubasdoc and b2.pk_cubasdoc=m2.pk_cubasdoc
+ and m3.pk_cumandoc=a.pk_third and b3.pk_cubasdoc=m3.pk_cubasdoc
+ and a.vbillno='92411905070037'
+

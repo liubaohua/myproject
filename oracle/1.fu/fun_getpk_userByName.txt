@@ -1,0 +1,11 @@
+create or replace function fun_getpk_userByName(cPersonName varchar2)
+ return varchar2 is
+  strResult varchar2(20);
+begin
+select max(yh.cuserid) into strResult from csxt.sm_user yh
+where yh.user_name = cPersonName;
+    return   strResult;
+end fun_getpk_userByName;
+
+
+

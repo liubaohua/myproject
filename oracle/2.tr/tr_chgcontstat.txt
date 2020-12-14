@@ -1,0 +1,74 @@
+create or replace trigger tr_chgcontstat
+after insert or update
+on formmain_0226--合同状态调整
+  for each row
+declare
+vBillType varchar(4);
+vBillType_orig varchar(4);
+sPK_Cont varchar(20);
+iContstat number;
+iOaBillId number;
+iCurrContstat number :=-1;
+nPayedmny number:=0;
+vNCResult clob;
+begin
+
+--field0056 单据状态
+--   562560076970477410  生效 0
+--   1253785730791001501 作废 1
+--   3809572103538428265 未生效 2
+
+-- field0009 单据类型
+--   -7405372342111681503  工程合同  0
+--   6778781750779463420  材料合同  1
+--   104504294407162084  其他合同  2
+--   3113107611590673641  付款申请单  3
+
+-- field0008 合同名称
+-- icontstatus 未生效:0,生效:1,中止:6
+
+if :new.field0056 = 562560076970477410 then
+iCurrContstat := 1;--生效
+end if;
+if :new.field0056 = 1253785730791001501 then
+iCurrContstat := 6;--TODO
+end if;
+if :new.field0056 = 3809572103538428265 then
+iCurrContstat := 0;--未生效
+end if;
+--单据类型
+if :new.field0009 = -7405372342111681503 then
+vBillType_orig :='9241';
+vBillType :='9247';--工程合同
+select max(id) into iOaBillId from formmain_0208 where field0008=:new.field0008;--根据合同名称查询ID
+end if;
+if :new.field0009 = 6778781750779463420 then
+vBillType_orig :='9242';
+vBillType :='9248';
+select max(id) into iOaBillId from formmain_0205 where field0008=:new.field0008;--根据合同名称查询ID
+end if;
+if :new.field0009 = 104504294407162084 then
+vBillType_orig :='9243';
+vBillType :='9249';
+select max(id) into iOaBillId from formmain_0204 where field0008=:new.field0008;--根据合同名称查询ID
+end if;
+
+select max(icontstatus),max(nsumpaybasemny),max(pk_cont) into iContstat, nPayedmny,sPK_Cont from csxt.pm_cm_contract c where nvl(c.dr,0)=0 and c.pk_billtype=vBillType_orig and c.vname= :new.field0008;
+if iContstat is null then
+  raise_application_error(-20001,'NC系统中未查询到数据'||vBillType||'---'||:new.field0008);
+  return;
+end if;
+if iCurrContstat = iContstat then
+  return;--
+end if;
+
+if nPayedmny > 0 then
+  raise_application_error(-20001,'已有付款记录不可变更状态'||vBillType||'---'||:new.field0008);
+  return;
+end if;
+
+ select FN_NCService(vBillType,sPK_Cont,iOaBillId) into vNCResult from dual;
+
+ insert into csxt.pm_oa_errlog(pk_billtype,pk_cont,oa_recid,message) values (vBillType,sPK_Cont,iOaBillId,vNCResult);
+
+end tr_chgcontstat;

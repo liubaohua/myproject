@@ -1,0 +1,41 @@
+
+create or replace trigger tr_qtht
+before insert or update
+on formmain_0204--其他合同
+  for each row
+declare
+
+pk_cubasdoc1st varchar(20);
+pk_cubasdoc2nd varchar(20);
+pk_project varchar(20);
+pk_corp1 varchar(4);
+pk_conttype1 varchar(20);
+begin
+
+select fun_getpk_corp(:new.field0004) into  pk_corp1 from dual;
+select fun_getpk_cubasdoc(:new.field0004,:new.field0015) into  pk_cubasdoc1st from dual;
+select fun_getpk_cubasdoc(:new.field0004,:new.field0016) into  pk_cubasdoc2nd from dual;
+select fun_getpk_project(:new.field0004,:new.field0011) into  pk_project from dual;
+select fun_getpk_projecttype(:new.field0009) into  pk_conttype1 from dual;
+
+--fun_getpk_corp iOaCorpid
+--fun_getpk_cubasdoc iOaCorpid,cCusName
+--fun_getpk_project iOaCorpid,cProjName
+--fun_getpk_projecttype  cProjectTypeName
+
+  select pk_corp1,
+  pk_conttype1,
+  (case when e2.enumvalue='0' then 'Y' else 'N' end) as law_flag,
+  pk_cubasdoc1st,
+  pk_cubasdoc2nd,
+  pk_project
+  into :new.field0025,--公司PK
+  :new.field0026,--合同类型PK
+  :new.field0030,--律师标志
+  :new.field0028,--甲方PK
+  :new.field0029,--乙方PK
+  :new.field0027--项目PK
+  from dual c left join ctp_enum_item e2 on e2.id=:new.field0007;--是否需要律师审批
+  
+
+end tr_qtht;

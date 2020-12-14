@@ -1,0 +1,10 @@
+    
+create or replace function fun_getpk_userByOaId(iUserid number)
+ return varchar2 is
+  strResult varchar2(20);
+begin
+select max(yh.cuserid) into strResult from org_member m3 
+left join csxt.sm_user yh on yh.user_name=m3.name
+where m3.id = iUserid;
+    return   strResult;
+end fun_getpk_userByOaId;

@@ -1,0 +1,13 @@
+
+create or replace function fun_getpk_project(iOaCorpid number,cProjName varchar2) return varchar2 is
+  strResult varchar2(20);
+begin
+
+select max(FIELD0005) into strResult from formmain_0214 proj 
+where proj.FIELD0002 = cProjName --项目名称
+  and proj.FIELD0004  =iOaCorpid;--公司id
+
+  return strResult;
+end fun_getpk_project;
+
+

@@ -1,0 +1,33 @@
+
+create or replace trigger tr_whtfk
+before insert or update
+on formmain_0201--无合同付款
+  for each row
+declare
+pk_cubasdoc1st varchar(20);
+pk_project varchar(20);
+pk_corp1 varchar(4);
+pk_noconttype1 varchar(20);
+begin
+
+select fun_getpk_corp(:new.field0015) into  pk_corp1 from dual;
+select fun_getpk_cubasdoc(:new.field0015,:new.field0003) into  pk_cubasdoc1st from dual;
+select fun_getpk_project(:new.field0015,:new.field0001) into  pk_project from dual;
+select max(field0004) into pk_noconttype1 from formmain_0213 where field0002=:new.field0002;
+
+--fun_getpk_corp iOaCorpid
+--fun_getpk_cubasdoc iOaCorpid,cCusName
+--fun_getpk_project iOaCorpid,cProjName
+--fun_getpk_projecttype  cProjectTypeName
+
+  select pk_corp1,
+  pk_noconttype1,
+  pk_cubasdoc1st,
+  pk_project
+  into :new.field0016,--公司PK
+  :new.field0017,--无合同费用类型PK TODO
+  :new.field0018,--收款单位PK
+  :new.field0021--项目ncpk
+  from dual c;
+
+end tr_whtfk;

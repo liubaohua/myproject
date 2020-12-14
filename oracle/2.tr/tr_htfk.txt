@@ -1,0 +1,47 @@
+create or replace trigger tr_htfk
+before insert or update
+on formmain_0206--合同付款
+  for each row
+declare
+pk_cubasdoc1st varchar(20);
+pk_cubasdoc2nd varchar(20);
+pk_project varchar(20);
+pk_corp1 varchar(4);
+pk_conttype1 varchar(20);
+pk_cont1 varchar(20);
+begin
+
+select fun_getpk_corp(:new.field0004) into  pk_corp1 from dual;
+select fun_getpk_cubasdoc(:new.field0004,:new.field0015) into  pk_cubasdoc1st from dual;
+select fun_getpk_cubasdoc(:new.field0004,:new.field0016) into  pk_cubasdoc2nd from dual;
+select fun_getpk_project(:new.field0004,:new.field0011) into  pk_project from dual;
+select fun_getpk_projecttype(:new.field0009) into  pk_conttype1 from dual;
+
+select max(pk_cont) into pk_cont1 from csxt.pm_cm_contract 
+where nvl(dr,0)=0 and vname=:new.field0008 and icontstatus in (1,4) and pk_billtype in ('9241','9242','9243');
+--fun_getpk_corp iOaCorpid
+--fun_getpk_cubasdoc iOaCorpid,cCusName
+--fun_getpk_project iOaCorpid,cProjName
+--fun_getpk_projecttype  cProjectTypeName
+
+  select pk_corp1,
+  pk_conttype1,
+  (case when e2.enumvalue='0' then 'Y' else 'N' end) as request_flag,
+  (case when e2.enumvalue='0' then 'Y' else 'N' end) as pay_flag,
+  pk_cubasdoc1st,
+  pk_cubasdoc2nd,
+  pk_project,
+  pk_cont1
+  into :new.field0034,--公司PK
+  :new.field0035,--合同类型PK
+  :new.field0040,--是否水电气请款标志
+  :new.field0041,--决算款标志
+  :new.field0038,--付款单位PK
+  :new.field0039,--收款单位PK
+  :new.field0037,--项目PK
+  :new.field0036 -- hetong pk
+  from dual c left join ctp_enum_item e2 on e2.id=:new.field0031--是否水电气请款
+  left join ctp_enum_item e3 on e3.id=:new.field0032;--是否决算款
+
+
+end tr_htfk;
