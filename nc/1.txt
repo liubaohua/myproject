@@ -1,1 +1,304 @@
-test
+
+public void afterEdit(BillEditEvent e) {
+              // TODOAuto-generated method stub
+
+              Object pkvalue =this.getBillCardPanel().getHeadItem("pk_message").getValueObject();
+
+              String temKey =e.getKey();
+
+              if(temKey.equalsIgnoreCase("")){
+                     Object obj =e.getValue();
+
+                     IUAPQueryBSiuap =(IUAPQueryBS)NCLocator.getInstance().lookup(IUAPQueryBS.class.getName());
+
+                     try {
+                            //Objectobjvo = iuap.retrieveByPK(ProMessageVO.class, "");
+
+                           
+
+                            MyBillVOmvo = (MyBillVO)this.getChangedVOFromUI();
+
+                            ProMessageVOhvo = (ProMessageVO)mvo.getParentVO();
+
+                           
+
+                            mvo.getChildrenVO();
+
+                           
+
+                            ProMessageVOvo = (ProMessageVO)HYPubBO_Client.queryByPrimaryKey(ProMessageVO.class,pkvalue.toString());
+
+                            vo.getI_number();
+
+                           
+
+                     } catch(Exception e1) {
+                            //TODO Auto-generated catch block
+
+                            e1.printStackTrace();
+
+                     }
+
+              }
+
+             
+
+              super.afterEdit(e);
+
+       }
+
+ 
+
+1.修改时
+
+//通过主键查询所有的vo 放到object里；
+
+              Object pkvaluemap =this.getBillCardPanel().getHeadItem("pk_message").getValueObject();
+
+//从页面通过一个字段 获取那个值
+
+String a =getBillCardPanelWrapper().getBillCardPanel().getHeadItem("state").getValue();
+
+ 
+
+2.从页面取值；
+
+3.MyBillVO vo= (MyBillVO) getBufferData().getCurrentVO();
+
+//通过下面的方法类的聚合VO；
+
+                            MyBillVOmvo = (MyBillVO)this.getChangedVOFromUI();
+
+                            //获得表头
+
+                            ProMessageVOhvo = (ProMessageVO)mvo.getParentVO();
+
+                            //获得标体
+
+                            mvo.getChildrenVO();
+
+ 
+
+//得到表体VO
+
+CbGatheringBVO[]  bodyBVO =(CbGatheringBVO[])this.getBillCardPanelWrapper().getBillCardPanel().getBillModel("ps_cb_gathering_b").getBodyValueVOs(CbGatheringBVO.class.getName());
+
+ 
+
+//用聚合VO得主键；只能在卡片管理下 才能获得主键
+
+super.onBoCard();//卡片状态下
+
+this.getBillUI().getChangedVOFromUI().getParentVO().getPrimaryKey();
+
+ 
+
+3.从数据库里根据一个字段取值；
+
+//声明一个接口
+
+IUAPQueryBS iuap = (IUAPQueryBS)NCLocator.getInstance().lookup(IUAPQueryBS.class.getName());
+
+ 
+
+//根据那个字段查询有没有这条数据
+
+                            Objectobjvo = iuap.retrieveByPK(ProMessageVO.class, "");
+
+ 
+
+4，保存按钮时提示，验证在MyEventHandler
+
+//方法重写
+
+importnc.ui.pub.beans.MessageDialog;
+
+protected void onBoSave() throws Exception {
+              // TODOAuto-generated method stub
+
+              this.getBillCardPanelWrapper().getBillCardPanel();
+
+              MessageDialog.showWarningDlg(null,"提示", "项目编号已存在！");
+
+              super.onBoSave();
+
+       }
+
+ 
+
+ 
+
+ 
+
+6.怎么获取一个VO
+
+ 
+
+              SuperVO[] allProc =this.getBusiDelegator().queryByCondition(ZxProjectsetVO.class,"isnull(dr,0)=0");
+
+                            HashMapprojectMapp = new HashMap();
+
+                            if(allProc!= null) {
+                                   intiLen = allProc.length;
+
+                                   for(inti = 0; i < iLen; i++) {
+                                          projectMapp.put((String)allProc[i].getAttributeValue("pk_corp"),(SuperVO)allProc[i]);
+
+                                   }
+
+                            }
+
+                            for(int i = 0; i < queryVos.length; i++) {
+                                   AggregatedValueObjectaVo = (AggregatedValueObject) Class
+
+                                                 .forName(getUIControl().getBillVoName()[0])
+
+                                                 .newInstance();
+
+                                  
+
+                                   ZxProjectsetVOresult = (ZxProjectsetVO)projectMapp.get(queryVos[i].getPrimaryKey());
+
+ 
+
+ 
+
+在前台能获得任何VO的主键方法getPrimaryKey();
+
+c:\\t.xml";
+
+ 
+
+其中\\里面的第一个\为转义符号；因为\这个符号在java里面有特订的意思；要表示路径的话就要在加个转义符号；
+
+IX,公司间调拨
+
+7.
+
+//通过一个sql语句（根据一个字段）查询一个VO;
+
+IUAPQueryBS queryBS = (IUAPQueryBS)NCLocator.getInstance().lookup(IUAPQueryBS.class.getName());  系统接口----可以查询时使用
+
+CbGatheringVO cbGatheringVO = (CbGatheringVO)queryBS.executeQuery(sql,new BeanProcessor(CbGatheringVO.class));//可以根据sql语句来查询一个vo
+
+ 
+
+queryBS.executeQuery(sql, new BeanListProcessor(UserVO.class));//得到UserVO的list
+
+~~~~~~~~~~~~~~更新数据
+
+nc.itf.uif.pub.IUifServicesrv=(nc.itf.uif.pub.IUifService)NCLocator.getInstance().lookup("nc.itf.uif.pub.IUifService");
+
+ 
+
+ 
+
+//获取增加时的当前VO；
+
+//    AggregatedValueObjectVOS = this.getBillUI().getVOFromUI();
+
+//    DispatchsBillVO VO =(DispatchsBillVO) VOS.getParentVO();
+
+//    VO.setRelatekey(relatekey);
+
+ 
+
+HYPubBO_Client.insert(VO);//把VO插到数据库里面
+
+//给表头页面set赋值
+
+this.getBillCardPanelWrapper().getBillCardPanel().setHeadItem("relatekey", relatekey);
+
+ 
+
+给表体赋值
+
+getBillCardPanel().setBodyValueAt(值，行号，列名);
+
+  //更新数据
+
+      getBillUI().getBufferData().refresh();
+
+8.光标移开时有验证不为空时；把当前文本清空
+
+this.getBillCardPanel().getHeadItem("i_number").setValue(null);
+
+ 
+
+ 
+
+ 
+
+9.命名规范，字符型以V开头
+
+时间以D
+
+数字以n
+
+自定义项：
+
+字符：10个 20位  ；5个 200位 ；3个500位 ；2 个2000位；
+
+浮点：10个
+
+整型：10个
+
+ 
+
+ 
+
+10.快速查找页面节点所在的那个类
+
+11.下拉菜单；S第一个,第二个,的三个
+
+SX,自由态=8,审核态=1  1， 2
+
+12.在oracle中 isnot不适用； 使用navl
+
+ 
+
+13.Public里面的类都是自动生成的
+
+Private里面的可以写一些动作脚本
+
+Client里面主要是我们写的业务类
+
+ 
+
+Public目录存放接口和公共代码(比如VO和公共算法)
+l
+Private目录存放实现和其它实现细节
+l
+Client目录存放客户端代码
+l
+gen 目录存放工具生成的ejb代码
+l
+META-INF目录存放模块配置文件目录，包括module.xml文件和xxx.module接口配置文件。
+
+14.流程的版本谁的高走谁的；用户比角色优先级高；
+
+15.公式
+
+<nc.ui.dxty.pubui.PropertyStatusRefModel>
+
+有的时候公式不执行就要
+
+强制执行公式
+
+ 
+
+可以放在重写方法里面；如：点击添加按钮时执行添加的重写方法；
+
+//加载表头的编辑公式
+
+getBillCardPanel().execHeadLoadFormulas();
+
+//加载表体的公式
+
+getBillCardPanelWrapper().getBillCardPanel().getBillModel().execLoadFormula();
+
+ 
+
+//执行模板上的编辑公式
+
+                         this.getBillCardPanel().getBillModel().execEditFormulasByKey(row,"invnum");
