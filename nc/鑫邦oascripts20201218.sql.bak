@@ -156,7 +156,7 @@ begin
   select max(pk_corp) into strResult from nc5.bd_corp c,org_unit u
   where c.unitname=u.name and u.id=iOaCorpid
   and( u.code ='company' or u.code is null)  ;
-  if strResult is null then--20210127
+  if strResult is null then
     select max(pk_corp) into strResult from nc5.bd_corp c,org_unit u
   where c.unitname=u.name and u.id=iOaCorpid;
   end if;
